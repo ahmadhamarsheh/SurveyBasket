@@ -1,4 +1,5 @@
-﻿using SurveyBasket.API.Services;
+﻿
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SurveyBasket.API.Controllers
 {
@@ -9,17 +10,31 @@ namespace SurveyBasket.API.Controllers
         private readonly IPollServices _pollServices = pollServices;
 
         [HttpGet("GetAll")]   
-        public IActionResult GetAll() => Ok(_pollServices.GetAll());
+        public IActionResult GetAll() => Ok(_pollServices.GetAll().MapAllToPollResponse());
 
         [HttpGet]
         [Route("GetById/{Id}")]
-        public IActionResult GetById(int Id) => Ok(_pollServices.GetById(Id));
+        public IActionResult GetById(int Id)
+        {
+            var item = _pollServices.GetById(Id);
+
+            return Ok(item.Adapt<PollResponse>());    
+        }
 
         [HttpPost]
         [Route("Add")]
-        public IActionResult Add(Poll request)
+        public IActionResult Add([FromBody]PollRequest request)
+            //[FromServices] IValidator<PollRequest> validator)
         {
-            var newPoll = _pollServices.Add(request);
+           /* var vaild = validator.Validate(request);
+            if (!vaild.IsValid)
+            {
+                var modelError = new ModelStateDictionary();
+                vaild.Errors.ForEach(x => modelError.AddModelError(x.PropertyName, x.ErrorMessage));
+
+                return ValidationProblem
+            }*/
+            var newPoll = _pollServices.Add(request.MapToPoll());
             return CreatedAtAction(nameof(GetById), new { Id = newPoll.Id }, newPoll);
         }
 
