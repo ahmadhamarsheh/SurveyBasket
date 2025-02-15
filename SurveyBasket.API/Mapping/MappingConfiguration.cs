@@ -5,7 +5,7 @@
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<Poll, PollResponse>()
-                .Map(dest => dest.Notes, src => src.Summary);
+                .Map(dest => dest.Summary, src => src.Summary);
         }
     }
 }
