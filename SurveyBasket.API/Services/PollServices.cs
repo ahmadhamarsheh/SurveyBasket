@@ -11,7 +11,7 @@ namespace SurveyBasket.API.Services
             {
                 Id = 1,
                 Title = "Test",
-                Description = "Test Test",
+                Summary = "Test Test",
             }
         };
 
@@ -34,7 +34,7 @@ namespace SurveyBasket.API.Services
                 return false;
             }
             curPoll.Title = poll.Title;
-            curPoll.Description = poll.Description;
+            curPoll.Summary = poll.Summary;
             return true;
         }
 

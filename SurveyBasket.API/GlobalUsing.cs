@@ -1,6 +1,6 @@
 ﻿global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
-global using SurveyBasket.API.Models;
+global using SurveyBasket.API.Entities;
 global using SurveyBasket.API.Contract;
 global using Mapster;
 global using SurveyBasket.API.Contract.Request;
@@ -12,3 +12,6 @@ global using MapsterMapper;
 global using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 global using System.Reflection;
 global using SurveyBasket.API;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using SurveyBasket.API.Persistence;
