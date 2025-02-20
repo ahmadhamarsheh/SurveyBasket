@@ -10,41 +10,41 @@ namespace SurveyBasket.API.Controllers
         private readonly IPollServices _pollServices = pollServices;
 
         [HttpGet("GetAll")]   
-        public async Task<IActionResult> GetAll() => Ok(await _pollServices.GetAllAsync());
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) => Ok(await _pollServices.GetAllAsync(cancellationToken));
 
         [HttpGet]
         [Route("GetById/{Id}")]
-        public IActionResult GetById(int Id)
+        public async Task<IActionResult> GetById(int Id, CancellationToken cancellationToken = default)
         {
-            var item = _pollServices.GetByIdAsync(Id);
+            var item = await _pollServices.GetByIdAsync(Id, cancellationToken);
 
             return Ok(item.Adapt<PollResponse>());
         }
 
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> Add([FromBody] PollRequest request)
+        public async Task<IActionResult> Add([FromBody] PollRequest request, CancellationToken cancellationToken = default)
         {
             
-            var newPoll = await _pollServices.AddPollAsync(request.MapToPoll());
+            var newPoll = await _pollServices.AddPollAsync(request.MapToPoll(), cancellationToken);
             return CreatedAtAction(nameof(GetById), new { Id = newPoll.Id }, newPoll);
         }
 
-        //[HttpPut]
-        //[Route("Update/{id}")]
-        //public IActionResult Update(int id, Poll request)
-        //{
-        //    var isUpdated = _pollServices.Update(id, request);
-        //    return  isUpdated == true ? NoContent() : NotFound();
-        //}
+        [HttpPut]
+        [Route("Update/{id}")]
+        public async Task<IActionResult> Update(int id, Poll request, CancellationToken cancellationToken = default)
+        {
+            var isUpdated = await _pollServices.UpdateAsync(id, request, cancellationToken);
+            return isUpdated == true ? NoContent() : NotFound();
+        }
 
-        //[HttpDelete]
-        //[Route("Delete/{id}")]
-        //public IActionResult Delete(int id)
-        //{
-        //    var isDelete = _pollServices.Delete(id);
-        //    return isDelete == true ? NoContent() : NotFound();
-        //}
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var isDelete = await _pollServices.DeleteAsync(id,cancellationToken);
+            return isDelete == true ? NoContent() : NotFound();
+        }
     }
 }
  
