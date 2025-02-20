@@ -1,6 +1,8 @@
-﻿namespace SurveyBasket.API.Persistence
+﻿
+
+namespace SurveyBasket.API.Persistence
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
     {
         public DbSet<Poll> Polls { get; set; }
 

@@ -15,3 +15,4 @@ global using SurveyBasket.API;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using SurveyBasket.API.Persistence;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
