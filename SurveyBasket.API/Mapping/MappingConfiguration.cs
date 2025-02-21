@@ -1,4 +1,6 @@
-﻿namespace SurveyBasket.API.Mapping
+﻿using SurveyBasket.API.Contract.Polls;
+
+namespace SurveyBasket.API.Mapping
 {
     public class MappingConfiguration : IRegister
     {

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SurveyBasket.API.Contract.Polls;
 
 namespace SurveyBasket.API.Controllers
 {

@@ -1,15 +1,10 @@
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddConnectionString(builder.Configuration);
-builder.Services.AddDependancies();
-builder.Services.AddController();
-builder.Services.AddSwagger();
-builder.Services.AddFluentValidation();
-builder.Services.AddMapsterConfig();
+builder.Services.AddDependancies(builder.Configuration);
 
+//builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
 
@@ -23,6 +18,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+//app.MapIdentityApi<ApplicationUser>();
 
 app.MapControllers();
 

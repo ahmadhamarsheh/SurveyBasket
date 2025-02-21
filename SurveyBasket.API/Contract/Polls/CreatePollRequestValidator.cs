@@ -1,10 +1,10 @@
-﻿namespace SurveyBasket.API.Contract.Validate
+﻿namespace SurveyBasket.API.Contract.Polls
 {
     public class CreatePollRequestValidator : AbstractValidator<PollRequest>
     {
         public CreatePollRequestValidator()
         {
-            RuleFor(x => x.Title).NotEmpty().WithMessage("Please add title").Length(3,20);
+            RuleFor(x => x.Title).NotEmpty().WithMessage("Please add title").Length(3, 20);
             RuleFor(x => x.StartAt)
                 .NotEmpty()
                 .GreaterThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today));

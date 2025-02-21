@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SurveyBasket.API.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class CustomeIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<string>(
+                name: "Title",
+                table: "Polls",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Summary",
+                table: "Polls",
+                type: "nvarchar(1500)",
+                maxLength: 1500,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -30,6 +48,8 @@ namespace SurveyBasket.API.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -157,6 +177,12 @@ namespace SurveyBasket.API.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Polls_Title",
+                table: "Polls",
+                column: "Title",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -219,6 +245,28 @@ namespace SurveyBasket.API.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Polls_Title",
+                table: "Polls");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Title",
+                table: "Polls",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(100)",
+                oldMaxLength: 100);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Summary",
+                table: "Polls",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(1500)",
+                oldMaxLength: 1500);
         }
     }
 }
