@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using SurveyBasket.API.Authentication;
 
 namespace SurveyBasket.API.Services
 {
@@ -7,10 +8,12 @@ namespace SurveyBasket.API.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public AuthService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly IJwtProvider _jwtProvider;
+        public AuthService(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IJwtProvider jwtProvider)
         {
             _context = context;
             _userManager = userManager;
+            _jwtProvider = jwtProvider;
         }
         public async Task<AuthResponse?> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
         {
@@ -23,9 +26,9 @@ namespace SurveyBasket.API.Services
             if(!checkPass) return null;
 
             //generate token
-            
+            var (token,expires) = _jwtProvider.GenerateToken(user);
             //return new response
-            return new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName ,"Token", 3600);
+            return new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName ,token, expires);
         }
     }
 }

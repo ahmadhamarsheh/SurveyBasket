@@ -1,15 +1,11 @@
-﻿
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SurveyBasket.API.Contract.Polls;
-
-namespace SurveyBasket.API.Controllers
+﻿namespace SurveyBasket.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PollsController(IPollServices pollServices) : ControllerBase
     {
         private readonly IPollServices _pollServices = pollServices;
-
+        [Authorize]
         [HttpGet("GetAll")]   
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) => Ok(await _pollServices.GetAllAsync(cancellationToken));
 
