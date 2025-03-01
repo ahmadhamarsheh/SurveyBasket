@@ -13,12 +13,17 @@ namespace SurveyBasket.API
             services.AddScoped<IPollServices, PollServices>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddSingleton<IJwtProvider, JwtProvider>();
+            //services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.sectionName));
+            services.AddOptions<JwtOptions>()
+                .BindConfiguration(JwtOptions.sectionName)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
             services.AddMapsterConfig();
             services.AddController(); 
             services.AddSwagger();
             services.AddFluentValidation();
             services.AddConnectionString(configuration);
-            services.AddAuthConfig();
+            services.AddAuthConfig(configuration);
             return services;
         }
         private static IServiceCollection AddMapsterConfig(this IServiceCollection services)
@@ -53,8 +58,10 @@ namespace SurveyBasket.API
             return services;
         }
 
-        private static IServiceCollection AddAuthConfig(this IServiceCollection services)
+        private static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
         {
+            var settings = configuration.GetSection(JwtOptions.sectionName).Get<JwtOptions>();
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -72,9 +79,9 @@ namespace SurveyBasket.API
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("68WkIxbdeF4EyZW6kQ6d1FDThBROMJsF")),
-                    ValidIssuer = "SurveyBasketApp",
-                    ValidAudience = "SurveyBasketApp users",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings?.Key!)),
+                    ValidIssuer = settings?.Issuer,
+                    ValidAudience = settings?.Audience,
                 };
             }                
                 );
