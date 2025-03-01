@@ -2,10 +2,11 @@
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PollsController(IPollServices pollServices) : ControllerBase
     {
         private readonly IPollServices _pollServices = pollServices;
-        [Authorize]
+
         [HttpGet("GetAll")]   
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default) => Ok(await _pollServices.GetAllAsync(cancellationToken));
 
@@ -24,7 +25,7 @@
         {
             
             var newPoll = await _pollServices.AddPollAsync(request.MapToPoll(), cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { Id = newPoll.Id }, newPoll);
+            return CreatedAtAction(nameof(GetById), new { Id = newPoll.Id }, newPoll.Adapt<PollResponse>());
         }
 
         [HttpPut]
