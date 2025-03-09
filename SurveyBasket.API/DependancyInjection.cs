@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SurveyBasket.API.Authentication;
+using SurveyBasket.API.Contract.Development;
 using System.Text;
 
 namespace SurveyBasket.API
@@ -9,7 +10,18 @@ namespace SurveyBasket.API
     public static class DependancyInjection
     {
         public static IServiceCollection AddDependancies(this IServiceCollection services, IConfiguration configuration)
-        {   
+        {
+
+            var AllowedOrigins = configuration.GetSection(DevEnvURL.GetDevEnvUrlFromConfig).Get<string[]>();
+
+            services.AddCors(options =>
+                options.AddDefaultPolicy(builder
+                => builder
+                    .WithOrigins(AllowedOrigins!)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                )
+            );
             services.AddScoped<IPollServices, PollServices>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddSingleton<IJwtProvider, JwtProvider>();
@@ -24,6 +36,7 @@ namespace SurveyBasket.API
             services.AddFluentValidation();
             services.AddConnectionString(configuration);
             services.AddAuthConfig(configuration);
+
             return services;
         }
         private static IServiceCollection AddMapsterConfig(this IServiceCollection services)

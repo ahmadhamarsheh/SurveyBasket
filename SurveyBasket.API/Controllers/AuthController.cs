@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -20,7 +21,12 @@ namespace SurveyBasket.API.Controllers
         public async Task<IActionResult> LoginAsync([FromBody]LoginRequest request, CancellationToken cancellationToken = default)
         {
             var authResult = await _authService.GetTokenAsync(request.Email, request.Password, cancellationToken);
-            return authResult is null ? BadRequest("Invalid email and password") : Ok(authResult);
+            //return authResult is null ? BadRequest("Invalid email and password") : Ok(authResult);
+            //return authResult.IsSuccess ? Ok(authResult) : Ok(authResult.Error);
+            return authResult.Match(
+                authResponse => Ok(authResponse),
+                error => Problem(statusCode: StatusCodes.Status400BadRequest, title: error.Code, detail: error.Description )
+            );
         }
         [HttpPost]
         [Route("Refresh")]

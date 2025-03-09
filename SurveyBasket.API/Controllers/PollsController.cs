@@ -12,11 +12,12 @@
 
         [HttpGet]
         [Route("GetById/{Id}")]
-        public async Task<IActionResult> GetById(int Id, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetById([FromRoute]int Id, CancellationToken cancellationToken = default)
         {
             var item = await _pollServices.GetByIdAsync(Id, cancellationToken);
 
-            return Ok(item.Adapt<PollResponse>());
+            return item.IsSuccess ?  Ok(item.Value) 
+                : Problem(statusCode: StatusCodes.Status404NotFound, title: item.Error.Code, detail: item.Error.Description);
         }
 
         [HttpPost]
@@ -24,16 +25,17 @@
         public async Task<IActionResult> Add([FromBody] PollRequest request, CancellationToken cancellationToken = default)
         {
             
-            var newPoll = await _pollServices.AddPollAsync(request.MapToPoll(), cancellationToken);
+            var newPoll = await _pollServices.AddPollAsync(request, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { Id = newPoll.Id }, newPoll.Adapt<PollResponse>());
         }
 
         [HttpPut]
         [Route("Update/{id}")]
-        public async Task<IActionResult> Update(int id, Poll request, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Update(int id, PollRequest request, CancellationToken cancellationToken = default)
         {
             var isUpdated = await _pollServices.UpdateAsync(id, request, cancellationToken);
-            return isUpdated == true ? NoContent() : NotFound();
+            return isUpdated.IsSuccess ? NoContent() 
+                : Problem(statusCode: StatusCodes.Status404NotFound, title: isUpdated.Error.Code, detail: isUpdated.Error.Description);
         }
 
         [HttpDelete]
@@ -41,7 +43,7 @@
         public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
             var isDelete = await _pollServices.DeleteAsync(id,cancellationToken);
-            return isDelete == true ? NoContent() : NotFound();
+            return isDelete.IsSuccess ? NoContent() : NotFound(isDelete.Error);
         }
     }
 }

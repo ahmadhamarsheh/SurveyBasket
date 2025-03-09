@@ -1,11 +1,13 @@
-﻿namespace SurveyBasket.API.Services
+﻿using SurveyBasket.API.Abstractions;
+
+namespace SurveyBasket.API.Services
 {
     public interface IPollServices
     {
         Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken);
-        Task<Poll?> GetByIdAsync(int id, CancellationToken cancellationToken);
-        Task<Poll> AddPollAsync(Poll request, CancellationToken cancellationToken);
-        Task<bool> UpdateAsync(int id, Poll poll, CancellationToken cancellationToken);
-        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<Result<PollResponse>> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<PollResponse> AddPollAsync(PollRequest request, CancellationToken cancellationToken);
+        Task<Result> UpdateAsync(int id, PollRequest request, CancellationToken cancellationToken);
+        Task<Result> DeleteAsync(int id, CancellationToken cancellationToken);
     }
 }
