@@ -21,3 +21,4 @@ global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using SurveyBasket.API.Contract.Polls;
 global using SurveyBasket.API.Abstractions;
+global using OneOf;

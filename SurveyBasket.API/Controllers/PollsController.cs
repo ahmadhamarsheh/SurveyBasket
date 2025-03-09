@@ -16,8 +16,8 @@
         {
             var item = await _pollServices.GetByIdAsync(Id, cancellationToken);
 
-            return item.IsSuccess ?  Ok(item.Value) 
-                : Problem(statusCode: StatusCodes.Status404NotFound, title: item.Error.Code, detail: item.Error.Description);
+            return item.IsT0 ?  Ok(item.AsT0) 
+                : Problem(statusCode: StatusCodes.Status404NotFound, title: item.AsT1.Code, detail: item.AsT1.Description);
         }
 
         [HttpPost]
@@ -26,7 +26,7 @@
         {
             
             var newPoll = await _pollServices.AddPollAsync(request, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { Id = newPoll.Id }, newPoll.Adapt<PollResponse>());
+            return CreatedAtAction(nameof(GetById), new { Id = newPoll.AsT0.Id }, newPoll.AsT0.Adapt<PollResponse>());
         }
 
         [HttpPut]
@@ -43,7 +43,8 @@
         public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
             var isDelete = await _pollServices.DeleteAsync(id,cancellationToken);
-            return isDelete.IsSuccess ? NoContent() : NotFound(isDelete.Error);
+            return isDelete.IsSuccess ? NoContent() 
+                : Problem(statusCode: StatusCodes.Status404NotFound, title: isDelete.Error.Code, detail: isDelete.Error.Description);
         }
     }
 }

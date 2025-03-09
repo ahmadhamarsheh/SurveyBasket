@@ -10,17 +10,18 @@ namespace SurveyBasket.API.Services
         public async Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken) => 
             await _context.Polls.AsNoTracking().ToListAsync();
 
-        public async Task<Result<PollResponse>> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<OneOf<PollResponse,Error>> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var poll = await _context.Polls.FindAsync(id, cancellationToken);
             return poll is not null
-                ? Result.Success(poll.Adapt<PollResponse>())
-                : Result.Failure<PollResponse>(PollError.IdNotFound);
+                ? poll.Adapt<PollResponse>()
+                : PollError.IdNotFound;
         }
             
-        public async Task<PollResponse> AddPollAsync(PollRequest model, CancellationToken cancellationToken)
+        public async Task<OneOf<PollResponse, Error>> AddPollAsync(PollRequest model, CancellationToken cancellationToken)
         {
             var pollModel = model.Adapt<Poll>();
+            if (pollModel is null) return PollError.PollNotValid;
             await _context.AddAsync(model, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return pollModel.Adapt<PollResponse>();
@@ -44,13 +45,13 @@ namespace SurveyBasket.API.Services
         public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken)
         {
             var oldPoll = await GetByIdAsync(id, cancellationToken);
-            if (oldPoll != null)
+            if (oldPoll.IsT0)
             {
                 _context.Remove(oldPoll);
                 await _context.SaveChangesAsync(cancellationToken);
                 return Result.Success();
             }
-            return Result.Failure(PollError.IdNotFound);
+            return Result.Failure(oldPoll.AsT1);
         }
     }
 }
