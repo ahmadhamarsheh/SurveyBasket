@@ -1,3 +1,5 @@
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,5 +24,8 @@ app.UseAuthorization();
 //app.MapIdentityApi<ApplicationUser>();
 
 app.MapControllers();
+
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseExceptionHandler();
 
 app.Run();

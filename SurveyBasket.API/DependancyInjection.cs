@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SurveyBasket.API.Authentication;
 using SurveyBasket.API.Contract.Development;
+using SurveyBasket.API.Errors;
 using System.Text;
 
 namespace SurveyBasket.API
@@ -25,6 +26,8 @@ namespace SurveyBasket.API
             services.AddScoped<IPollServices, PollServices>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddSingleton<IJwtProvider, JwtProvider>();
+            services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddProblemDetails();
             //services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.sectionName));
             services.AddOptions<JwtOptions>()
                 .BindConfiguration(JwtOptions.sectionName)
