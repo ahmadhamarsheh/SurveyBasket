@@ -18,24 +18,29 @@ namespace SurveyBasket.API.Services
                 : PollError.IdNotFound;
         }
             
-        public async Task<OneOf<PollResponse, Error>> AddPollAsync(PollRequest model, CancellationToken cancellationToken)
+        public async Task<Result<PollResponse>> AddPollAsync(PollRequest model, CancellationToken cancellationToken)
         {
+            var isPollExist = _context.Polls.AnyAsync(x => x.Title == model.Title, cancellationToken);
+            if (isPollExist != null) { return Result.Failure<PollResponse>(PollError.PollIsExist); }
             var pollModel = model.Adapt<Poll>();
-            if (pollModel is null) return PollError.PollNotValid;
+
             await _context.AddAsync(model, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return pollModel.Adapt<PollResponse>();
+            return Result.Success(pollModel.Adapt<PollResponse>());
         }
 
-        public async Task<Result> UpdateAsync(int id, PollRequest poll, CancellationToken cancellationToken)
+        public async Task<Result> UpdateAsync(int id, PollRequest request, CancellationToken cancellationToken)
         {
+            var isPollExist = _context.Polls.AnyAsync(x => x.Title == request.Title, cancellationToken);
+            if (isPollExist != null) { return Result.Failure<PollResponse>(PollError.PollIsExist); }
+
             var curr = await _context.Polls.FindAsync(id, cancellationToken);
             if (curr != null)
             {
-                curr.Summary = poll.Summary;
-                curr.StartAt = poll.StartAt;
-                curr.EndAt = poll.EndAt;
-                curr.Title = poll.Title;
+                curr.Summary = request.Summary;
+                curr.StartAt = request.StartAt;
+                curr.EndAt = request.EndAt;
+                curr.Title = request.Title;
                 await _context.SaveChangesAsync(cancellationToken);
                 return Result.Success();
             }

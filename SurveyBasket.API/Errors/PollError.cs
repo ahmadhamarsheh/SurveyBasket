@@ -6,5 +6,6 @@ namespace SurveyBasket.API.Errors
     {
         public static readonly Error IdNotFound = new("Poll.IdNotFound", "There is no poll with this Id");
         public static readonly Error PollNotValid = new("Poll.PollNotValid", "Poll was not valid, please ensure all input correct");
+        public static readonly Error PollIsExist = new("Poll.PollIsExist", "Poll was exist, please enter a different poll title");
     }
 }

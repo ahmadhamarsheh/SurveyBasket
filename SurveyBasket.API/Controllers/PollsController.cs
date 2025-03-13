@@ -26,7 +26,9 @@
         {
             
             var newPoll = await _pollServices.AddPollAsync(request, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { Id = newPoll.AsT0.Id }, newPoll.AsT0.Adapt<PollResponse>());
+            return newPoll.IsSuccess
+                ? CreatedAtAction(nameof(GetById), new { Id = newPoll.Value.Id }, newPoll.Value.Adapt<PollResponse>())
+                : newPoll.ToProblem(StatusCodes.Status409Conflict, "Internal Server Error");
         }
 
         [HttpPut]
