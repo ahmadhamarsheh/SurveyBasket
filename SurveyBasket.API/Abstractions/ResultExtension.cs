@@ -2,7 +2,7 @@
 {
     public static class ResultExtension
     {
-        public static ObjectResult ToProblem(this Result result, int status, string title)
+        public static ObjectResult ToProblem(this Result result, int status, string? title = null)
         {
             if (result.IsSuccess)
                 throw new InvalidOperationException("cannot convert success to problem");

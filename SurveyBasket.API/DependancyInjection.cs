@@ -24,6 +24,7 @@ namespace SurveyBasket.API
                 )
             );
             services.AddScoped<IPollServices, PollServices>();
+            services.AddScoped<IQuestionServices, QuestionServices>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddSingleton<IJwtProvider, JwtProvider>();
             services.AddExceptionHandler<GlobalExceptionHandler>();

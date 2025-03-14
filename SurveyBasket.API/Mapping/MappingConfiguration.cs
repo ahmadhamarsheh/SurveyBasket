@@ -1,4 +1,5 @@
 ﻿using SurveyBasket.API.Contract.Polls;
+using SurveyBasket.API.Contract.Questions;
 
 namespace SurveyBasket.API.Mapping
 {
@@ -8,6 +9,9 @@ namespace SurveyBasket.API.Mapping
         {
             config.NewConfig<Poll, PollResponse>()
                 .Map(dest => dest.Summary, src => src.Summary);
+
+            config.NewConfig<QuestionRequest, Question>()
+                .Map(dest => dest.Answers, src => src.Answers.Select(answer => new Answer { Content = answer }));
         }
     }
 }

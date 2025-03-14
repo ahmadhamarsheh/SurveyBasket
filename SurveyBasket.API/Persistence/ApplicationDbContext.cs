@@ -9,6 +9,8 @@ namespace SurveyBasket.API.Persistence
     {   
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         public DbSet<Poll> Polls { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         
 
@@ -18,6 +20,16 @@ namespace SurveyBasket.API.Persistence
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new PollConfiguration());
+
+            var cascadeFKs = modelBuilder.Model
+                .GetEntityTypes()
+                .SelectMany(x => x.GetForeignKeys())
+                .Where(x => x.DeleteBehavior == DeleteBehavior.Cascade && !x.IsOwnership);
+
+            foreach (var fk in cascadeFKs)
+            {
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
