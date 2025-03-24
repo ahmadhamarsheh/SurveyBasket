@@ -21,6 +21,15 @@ namespace SurveyBasket.API.Controllers
                 : result.ToProblem(StatusCodes.Status404NotFound);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAll([FromRoute] int pollId, [FromRoute] int Id, CancellationToken cancellationToken = default)
+        {
+            var result = await _questionServices.GetAsync(pollId, Id, cancellationToken);
+            return result.IsSuccess
+                ? Ok(result.Value)
+                : result.ToProblem(StatusCodes.Status404NotFound);
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> Add([FromRoute] int pollId, [FromBody] QuestionRequest request, CancellationToken cancellationToken = default)
         {

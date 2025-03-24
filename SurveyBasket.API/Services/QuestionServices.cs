@@ -49,6 +49,18 @@ namespace SurveyBasket.API.Services
             return Result.Success(question.Adapt<QuestionResponse>());
         }
 
+        public async Task<Result<QuestionResponse>> GetAsync(int pollId, int Id, CancellationToken cancellationToken = default)
+        {
+            var question = await _context.Questions
+                .Where(x => x.PollId == pollId && x.Id == Id)
+                .Include(x => x.Answers)
+                .ProjectToType<QuestionResponse>()
+                .AsNoTracking()
+                .SingleOrDefaultAsync(cancellationToken);
 
+            if (question is null)
+                return Result.Failure<QuestionResponse>(QuestionError.QuestionNotFound);
+            return Result.Success(question);
+        }
     }
 }
