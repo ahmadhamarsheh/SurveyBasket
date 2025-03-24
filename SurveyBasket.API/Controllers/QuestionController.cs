@@ -30,6 +30,15 @@ namespace SurveyBasket.API.Controllers
                 : result.ToProblem(StatusCodes.Status404NotFound);
         }
 
+        [HttpPut("{id}/toggleStatus")]
+        public async Task<IActionResult> ToggleStatus([FromRoute] int pollId, [FromRoute] int Id, CancellationToken cancellationToken = default)
+        {
+            var result = await _questionServices.ToggleStatusAsync(pollId, Id, cancellationToken);
+            return result.IsSuccess
+                ? NoContent()
+                : result.ToProblem(StatusCodes.Status404NotFound);
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> Add([FromRoute] int pollId, [FromBody] QuestionRequest request, CancellationToken cancellationToken = default)
         {

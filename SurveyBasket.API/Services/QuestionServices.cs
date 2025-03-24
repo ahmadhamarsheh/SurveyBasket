@@ -62,5 +62,18 @@ namespace SurveyBasket.API.Services
                 return Result.Failure<QuestionResponse>(QuestionError.QuestionNotFound);
             return Result.Success(question);
         }
+
+        public async Task<Result> ToggleStatusAsync(int pollId, int Id, CancellationToken cancellationToken = default)
+        {
+            var question = await _context.Questions.SingleOrDefaultAsync(x => x.Id == Id && x.PollId == pollId);
+
+            if (question is null)
+                return Result.Failure<QuestionResponse>(QuestionError.QuestionNotFound);
+
+            question.IsActive = !question.IsActive;
+
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result.Success(question);
+        }
     }
 }
